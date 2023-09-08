@@ -1,109 +1,98 @@
 import SwiftUI
 
-enum CalculatorMode {
+enum CalculatorOperation {
     case none, addition, subtraction, multiplication, division
 }
 
 struct ContentView: View {
-    @State private var displayText = "0"
-    @State private var currentInput = ""
-    @State private var currentMode: CalculatorMode = .none
-    @State private var storedValue = 0.0
+    @State private var currentInput = "0"
+    @State private var previousInput = ""
+    @State private var selectedOperation: CalculatorOperation = .none
     
     var body: some View {
-        VStack {
-            Text(displayText)
-                .font(.largeTitle)
+        VStack(spacing: 10) {
+            Text(currentInput)
+                .font(.system(size: 60))
+                .frame(minWidth: 0, maxWidth: .infinity, alignment: .trailing)
                 .padding()
             
-            HStack {
-                CalculatorButton("7")
-                CalculatorButton("8")
-                CalculatorButton("9")
-                CalculatorButton("÷", .orange, action: { self.operationButtonTapped(.division) })
+            HStack(spacing: 10) {
+                CalculatorButton(label: "7", action: { appendInput("7") })
+                CalculatorButton(label: "8", action: { appendInput("8") })
+                CalculatorButton(label: "9", action: { appendInput("9") })
+                CalculatorButton(label: "÷", action: { setOperation(.division) })
+                    
             }
             
-            HStack {
-                CalculatorButton("4")
-                CalculatorButton("5")
-                CalculatorButton("6")
-                CalculatorButton("×", .orange, action: { self.operationButtonTapped(.multiplication) })
+            HStack(spacing: 10) {
+                CalculatorButton(label: "4", action: { appendInput("4") })
+                CalculatorButton(label: "5", action: { appendInput("5") })
+                CalculatorButton(label: "6", action: { appendInput("6") })
+                CalculatorButton(label: "×", action: { setOperation(.multiplication) })
             }
             
-            HStack {
-                CalculatorButton("1")
-                CalculatorButton("2")
-                CalculatorButton("3")
-                CalculatorButton("-", .orange, action: { self.operationButtonTapped(.subtraction) })
+            HStack(spacing: 10) {
+                CalculatorButton(label: "1", action: { appendInput("1") })
+                CalculatorButton(label: "2", action: { appendInput("2") })
+                CalculatorButton(label: "3", action: { appendInput("3") })
+                CalculatorButton(label: "-", action: { setOperation(.subtraction) })
             }
             
-            HStack {
-                CalculatorButton("0")
-                CalculatorButton(".", .gray, action: { self.numberButtonTapped(".") })
-                CalculatorButton("=", .orange, action: { self.equalButtonTapped() })
-                CalculatorButton("+", .orange, action: { self.operationButtonTapped(.addition) })
+            HStack(spacing: 10) {
+                CalculatorButton(label: "0", action: { appendInput("0") })
+                CalculatorButton(label: ".", action: { appendInput(".") })
+                CalculatorButton(label: "=", action: { performOperation() })
+                CalculatorButton(label: "+", action: { setOperation(.addition) })
             }
             
-            Spacer()
-            
-            Button("Clear", action: { self.clearButtonTapped() })
-                .font(.title)
-                .padding()
-                .foregroundColor(.white)
-                .background(Color.red)
-                .cornerRadius(10)
-                .padding()
+            CalculatorButton(label: "C", action: { clear() })
+        }
+        .padding()
+    }
+    
+    func appendInput(_ input: String) {
+        if currentInput == "0" || currentInput == "-0" {
+            currentInput = input
+        } else {
+            currentInput += input
         }
     }
     
-    func numberButtonTapped(_ number: String) {
-        currentInput += number
-        displayText = currentInput
-    }
-    
-    func operationButtonTapped(_ mode: CalculatorMode) {
-        if currentMode != .none {
-            equalButtonTapped()
+    func setOperation(_ operation: CalculatorOperation) {
+        if selectedOperation == .none {
+            previousInput = currentInput
+            currentInput = "0"
         }
-        
-        storedValue = Double(currentInput) ?? 0
-        currentInput = ""
-        currentMode = mode
+        selectedOperation = operation
     }
     
-    func equalButtonTapped() {
-        guard !currentInput.isEmpty else { return }
+    func performOperation() {
+        guard let currentValue = Double(currentInput),
+              let previousValue = Double(previousInput) else { return }
         
-        let currentValue = Double(currentInput) ?? 0
-        var result = 0.0
-        
-        switch currentMode {
+        switch selectedOperation {
         case .addition:
-            result = storedValue + currentValue
+            currentInput = String(previousValue + currentValue)
         case .subtraction:
-            result = storedValue - currentValue
+            currentInput = String(previousValue - currentValue)
         case .multiplication:
-            result = storedValue * currentValue
+            currentInput = String(previousValue * currentValue)
         case .division:
             if currentValue != 0 {
-                result = storedValue / currentValue
+                currentInput = String(previousValue / currentValue)
             } else {
-                displayText = "Error"
-                return
+                currentInput = "Error"
             }
         case .none:
-            result = currentValue
+            break
         }
         
-        currentInput = String(result)
-        displayText = currentInput
-        currentMode = .none
+        selectedOperation = .none
     }
     
-    func clearButtonTapped() {
-        currentInput = ""
-        displayText = "0"
-        currentMode = .none
-        storedValue = 0
+    func clear() {
+        currentInput = "0"
+        previousInput = ""
+        selectedOperation = .none
     }
 }

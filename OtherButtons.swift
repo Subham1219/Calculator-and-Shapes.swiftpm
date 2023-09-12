@@ -88,7 +88,8 @@ struct CalculatorButtonView: View {
     }
     
     private func buttonWidth() -> CGFloat {
-        return (UIScreen.main.bounds.width - 5 * 10) / 4
+        return (UIScreen
+            .main.bounds.width - 5 * 10) / 4
     }
     
     private func buttonHeight() -> CGFloat {

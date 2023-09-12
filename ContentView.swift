@@ -6,20 +6,23 @@ struct ContentView: View {
     @State private var selectedOperator: CalculatorButton?
     
     var body: some View {
-        VStack(spacing: 10) {
-            Spacer()
-            
-            Text(currentInput)
-                .font(.largeTitle)
-                .foregroundColor(.white)
-                .padding()
-            
-            CalculatorButtonGrid(
-                currentInput: $currentInput,
-                firstOperand: $firstOperand,
-                selectedOperator: $selectedOperator
-            )
+            ZStack {
+                Color.black.edgesIgnoringSafeArea(.all) 
+                
+                VStack(spacing: 10) {
+                    Spacer()
+                    
+                    Text(currentInput)
+                        .font(.largeTitle)
+                        .foregroundColor(.white)
+                        .padding()
+                    
+                    CalculatorButtonGrid(
+                        currentInput: $currentInput,
+                        firstOperand: $firstOperand,
+                        selectedOperator: $selectedOperator
+                    )
+                }
+            }
         }
-        .background(Color.black.edgesIgnoringSafeArea(.all))
     }
-}

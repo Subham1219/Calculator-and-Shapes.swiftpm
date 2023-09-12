@@ -15,7 +15,7 @@ struct ContentView: View {
                 .font(.system(size: 60))
                 .frame(minWidth: 0, maxWidth: .infinity, alignment: .trailing)
                 .padding()
-            
+            Text("Hello")
             HStack(spacing: 10) {
                 CalculatorButton(label: "7", action: { appendInput("7") })
                 CalculatorButton(label: "8", action: { appendInput("8") })

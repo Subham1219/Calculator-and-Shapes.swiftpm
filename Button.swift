@@ -1,17 +1,23 @@
 import SwiftUI
-struct CalculatorButton: View {
-    let label: String
-    let action: () -> Void
+
+enum CalculatorButton: String {
+    case clear, plusMinus, percent
+    case divide, multiply, subtract, add, equal
+    case decimal
+    case zero, one, two, three, four, five, six, seven, eight, nine
     
-    var body: some View {
-        Button(action: action) {
-            Text(label)
-                .font(.system(size: 24))
-                .frame(width: 80, height: 80)
-                .background(Color.orange)
-                .foregroundColor(.black)
-                .cornerRadius(40)
+    var title: String {
+        return rawValue
+    }
+    
+    var backgroundColor: Color {
+        switch self {
+        case .zero, .one, .two, .three, .four, .five, .six, .seven, .eight, .nine, .decimal:
+            return Color(.systemGray4)
+        case .clear, .plusMinus, .percent:
+            return Color(.systemGray)
+        case .divide, .multiply, .subtract, .add, .equal:
+            return Color(.orange)
         }
     }
 }
-
